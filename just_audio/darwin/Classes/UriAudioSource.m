@@ -28,10 +28,17 @@
 
 - (IndexedPlayerItem *)createPlayerItem:(NSString *)uri {
     IndexedPlayerItem *item;
+    id objects[] = { @"YES" };
+    id keys[] = { AVURLAssetPreferPreciseDurationAndTimingKey };
+    NSUInteger count = sizeof(objects) / sizeof(id);
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects
+                                                       forKeys:keys
+                                                         count:count];
     if ([uri hasPrefix:@"file://"]) {
-        item = [[IndexedPlayerItem alloc] initWithURL:[NSURL fileURLWithPath:[[uri stringByRemovingPercentEncoding] substringFromIndex:7]]];
+        item = [[IndexedPlayerItem alloc] initWithURL:
+            [NSURL fileURLWithPath:[[uri stringByRemovingPercentEncoding] substringFromIndex:7]] options:dictionary];
     } else {
-        item = [[IndexedPlayerItem alloc] initWithURL:[NSURL URLWithString:uri]];
+        item = [[IndexedPlayerItem alloc] initWithURL:[NSURL URLWithString:uri] options:dictionary];
     }
     if (@available(macOS 10.13, iOS 11.0, *)) {
         // This does the best at reducing distortion on voice with speeds below 1.0
@@ -173,3 +180,4 @@
 }
 
 @end
+
